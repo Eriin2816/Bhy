@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+*.local
+
+# Dev screenshots
+screenshot-*.png
+preview-*.png
+fix-*.png
+atm-*.png
+.playwright-mcp/
+
+# Vite cache
+.vite/
