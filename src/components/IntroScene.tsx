@@ -62,6 +62,7 @@ export function IntroScene() {
             marginBottom: '0.6em',
             fontStyle: 'italic',
             fontWeight: 300,
+            opacity: 0,
           }}
         >
           This is for the nights you stayed strong,
@@ -73,6 +74,7 @@ export function IntroScene() {
             color: 'var(--text-muted)',
             fontStyle: 'italic',
             fontWeight: 300,
+            opacity: 0,
           }}
         >
           even when no one saw how hard it was.
