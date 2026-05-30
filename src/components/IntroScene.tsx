@@ -11,15 +11,14 @@ export function IntroScene() {
 
       gsap.fromTo(
         lines,
-        { opacity: 0, y: 28, filter: 'blur(10px)' },
+        { opacity: 0, y: 22, filter: 'blur(8px)' },
         {
           opacity: 1,
           y: 0,
           filter: 'blur(0px)',
-          duration: 2.6,
+          duration: 2.4,
           ease: 'power2.out',
-          stagger: 0.65,
-          delay: 0.4,
+          stagger: 0.55,
         }
       )
     }, containerRef)
@@ -33,22 +32,21 @@ export function IntroScene() {
       className="scene min-h-screen flex-col text-center"
       style={{ background: 'transparent' }}
     >
-      {/* Warm radial glow behind text */}
+      {/* Warm centered bloom */}
       <div
         aria-hidden
         style={{
           position: 'absolute',
           inset: 0,
           background:
-            'radial-gradient(ellipse 65% 50% at 50% 50%, rgba(201,168,122,0.09) 0%, rgba(180,130,80,0.04) 40%, transparent 72%)',
+            'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,122,0.08) 0%, transparent 70%)',
           pointerEvents: 'none',
-          animation: 'haze-pulse-b 12s ease-in-out infinite',
         }}
       />
 
       <div
         style={{
-          maxWidth: '680px',
+          maxWidth: '700px',
           width: '100%',
           position: 'relative',
           zIndex: 1,
@@ -57,27 +55,42 @@ export function IntroScene() {
         <p
           className="intro-line text-display"
           style={{
-            fontSize: 'clamp(2rem, 4.5vw, 3.8rem)',
+            fontSize: 'clamp(2.2rem, 5vw, 4.4rem)',
             color: 'var(--white)',
-            marginBottom: '0.6em',
+            marginBottom: '0.3em',
             fontStyle: 'italic',
             fontWeight: 300,
             opacity: 0,
           }}
         >
-          This is for the nights you stayed strong,
+          Nine months of love.
         </p>
         <p
           className="intro-line text-display"
           style={{
-            fontSize: 'clamp(2rem, 4.5vw, 3.8rem)',
-            color: 'var(--text-muted)',
+            fontSize: 'clamp(2.2rem, 5vw, 4.4rem)',
+            color: 'var(--white)',
+            marginBottom: '0.55em',
             fontStyle: 'italic',
             fontWeight: 300,
             opacity: 0,
           }}
         >
-          even when no one saw how hard it was.
+          Nine months of strength.
+        </p>
+        <p
+          className="intro-line text-display"
+          style={{
+            fontSize: 'clamp(1.5rem, 3vw, 2.8rem)',
+            color: 'var(--champagne)',
+            fontStyle: 'italic',
+            fontWeight: 300,
+            letterSpacing: '0.02em',
+            textShadow: '0 0 40px rgba(201,168,122,0.3)',
+            opacity: 0,
+          }}
+        >
+          A lifetime of gratitude.
         </p>
       </div>
     </section>

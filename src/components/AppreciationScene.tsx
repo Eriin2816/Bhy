@@ -3,16 +3,14 @@ import gsap from 'gsap'
 
 const SENTENCES = [
   'I saw your strength.',
-  'I saw your sacrifices.',
-  'I saw how much love you gave\nbefore she was even born.',
+  'I saw your love.',
+  'I saw the quiet sacrifices\nyou made every single day.',
 ]
 
-// Explicit non-overlapping schedule (fraction of total scroll progress)
-// Each sentence is fully hidden before the next one appears
 const SCHEDULE = [
   { enter: 0.06, hold: 0.28, exit: 0.38 },
   { enter: 0.44, hold: 0.62, exit: 0.72 },
-  { enter: 0.78, hold: 0.95, exit: 1.1 }, // last stays
+  { enter: 0.78, hold: 0.95, exit: 1.1 },
 ]
 
 export function AppreciationScene() {
@@ -42,11 +40,9 @@ export function AppreciationScene() {
 
       sentences.forEach((el, i) => {
         const s = SCHEDULE[i]
-
-        // Fade in: blur-to-sharp, scale up
         tl.fromTo(
           el,
-          { opacity: 0, scale: 0.94, filter: 'blur(6px)', y: 12 },
+          { opacity: 0, scale: 0.95, filter: 'blur(5px)', y: 10 },
           {
             opacity: 1,
             scale: 1,
@@ -57,16 +53,14 @@ export function AppreciationScene() {
           },
           s.enter
         )
-
-        // Fade out: only if not the last sentence
         if (i < sentences.length - 1) {
           tl.to(
             el,
             {
               opacity: 0,
               scale: 0.97,
-              filter: 'blur(4px)',
-              y: -10,
+              filter: 'blur(3px)',
+              y: -8,
               duration: s.exit - s.hold,
               ease: 'power2.in',
             },
@@ -83,32 +77,26 @@ export function AppreciationScene() {
     <section
       ref={sectionRef}
       className="scene min-h-screen"
-      style={{
-        background: 'transparent',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      style={{ background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
-      {/* Warm centered glow */}
+      {/* Centered warm glow */}
       <div
         aria-hidden
         style={{
           position: 'absolute',
           inset: 0,
           background:
-            'radial-gradient(ellipse 55% 45% at 50% 50%, rgba(201,168,122,0.07) 0%, transparent 68%)',
+            'radial-gradient(ellipse 55% 48% at 50% 50%, rgba(201,168,122,0.07) 0%, transparent 68%)',
           pointerEvents: 'none',
-          animation: 'haze-pulse-a 16s ease-in-out infinite',
         }}
       />
-      {/* Container that holds absolutely-positioned sentences */}
+
       <div
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: '760px',
-          height: 'clamp(200px, 35vh, 340px)',
+          maxWidth: '780px',
+          height: 'clamp(200px, 38vh, 360px)',
         }}
       >
         {SENTENCES.map((sentence, i) => (
@@ -124,15 +112,16 @@ export function AppreciationScene() {
               textAlign: 'center',
               fontSize:
                 i === 2
-                  ? 'clamp(1.8rem, 4vw, 3.8rem)'
-                  : 'clamp(2rem, 4.5vw, 4.2rem)',
+                  ? 'clamp(1.9rem, 4.2vw, 4rem)'
+                  : 'clamp(2.2rem, 5vw, 4.6rem)',
               fontWeight: i === 2 ? 400 : 300,
               fontStyle: i === 2 ? 'italic' : 'normal',
-              color: 'var(--white)',
+              color: i === 1 ? 'var(--champagne)' : 'var(--white)',
               lineHeight: 1.2,
               whiteSpace: 'pre-line',
               opacity: 0,
               padding: '0 1rem',
+              textShadow: i === 1 ? '0 0 35px rgba(201,168,122,0.25)' : 'none',
             }}
           >
             {sentence}
