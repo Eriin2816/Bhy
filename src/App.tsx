@@ -8,6 +8,7 @@ import { IntroScene } from './components/IntroScene'
 import { SacrificeScene } from './components/SacrificeScene'
 import { AppreciationScene } from './components/AppreciationScene'
 import { FamilyScene } from './components/FamilyScene'
+import { NewDaughterScene } from './components/NewDaughterScene'
 import { GiftMeaningScene } from './components/GiftMeaningScene'
 import { VideoRevealScene } from './components/VideoRevealScene'
 import { HeartfeltLetter } from './components/HeartfeltLetter'
@@ -55,6 +56,7 @@ export default function App() {
         <SacrificeScene />
         <AppreciationScene />
         <FamilyScene />
+        <NewDaughterScene />
         <GiftMeaningScene />
         <VideoRevealScene />
         <HeartfeltLetter />

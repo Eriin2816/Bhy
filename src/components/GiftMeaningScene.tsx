@@ -1,20 +1,22 @@
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
+import { MemoryImage } from './MemoryImage'
 
 const LINES = [
-  { text: 'No gift could ever equal',                      glow: false, muted: false },
-  { text: "what you've done.",                             glow: false, muted: false },
-  { text: '',                                               spacer: true },
-  { text: 'But this is my small way of saying…',     glow: false, muted: true  },
-  { text: '',                                               spacer: true },
-  { text: 'thank you,',                                    glow: false, muted: false },
-  { text: 'I love you,',                                   glow: true,  muted: false },
-  { text: 'and I appreciate you',                          glow: false, muted: false },
-  { text: 'more than words can say.',                      glow: false, muted: false },
+  { text: 'No gift could ever equal',                  glow: false, muted: false },
+  { text: "what you've done.",                          glow: false, muted: false },
+  { text: '',                                            spacer: true },
+  { text: 'But this is my small way of saying…',       glow: false, muted: true  },
+  { text: '',                                            spacer: true },
+  { text: 'thank you,',                                 glow: false, muted: false },
+  { text: 'I love you,',                                glow: true,  muted: false },
+  { text: 'and I appreciate you',                       glow: false, muted: false },
+  { text: 'more than words can say.',                   glow: false, muted: false },
 ]
 
 export function GiftMeaningScene() {
   const sectionRef = useRef<HTMLElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -39,6 +41,40 @@ export function GiftMeaningScene() {
           },
         }
       )
+
+      // Image: fades in softly as the emotional anchor for this section
+      if (imageRef.current) {
+        gsap.fromTo(
+          imageRef.current,
+          { opacity: 0, y: 40, scale: 0.95, filter: 'blur(12px)' },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 2.2,
+            ease: 'power2.out',
+            delay: 0.5,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 70%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+
+        // Gentle parallax
+        gsap.to(imageRef.current, {
+          yPercent: -12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      }
     }, section)
 
     return () => ctx.revert()
@@ -47,8 +83,8 @@ export function GiftMeaningScene() {
   return (
     <section
       ref={sectionRef}
-      className="scene min-h-screen flex-col justify-center"
-      style={{ background: 'transparent' }}
+      className="scene min-h-screen scene-split"
+      style={{ background: 'transparent', overflow: 'hidden' }}
     >
       {/* Fade to black at bottom — blends into video */}
       <div
@@ -65,7 +101,11 @@ export function GiftMeaningScene() {
         }}
       />
 
-      <div style={{ maxWidth: '640px', width: '100%', position: 'relative', zIndex: 1 }}>
+      {/* Left: text */}
+      <div
+        className="split-text"
+        style={{ maxWidth: '520px', position: 'relative', zIndex: 3 }}
+      >
         {LINES.map((line, i) =>
           (line as { spacer?: boolean }).spacer ? (
             <div key={i} style={{ height: '1.3em' }} />
@@ -76,7 +116,7 @@ export function GiftMeaningScene() {
               style={{
                 fontSize: line.glow
                   ? 'clamp(2.6rem, 5.5vw, 5rem)'
-                  : 'clamp(1.5rem, 3.1vw, 2.7rem)',
+                  : 'clamp(1.4rem, 2.8vw, 2.5rem)',
                 fontWeight: line.glow ? 500 : 300,
                 fontStyle: line.glow ? 'italic' : 'normal',
                 color: line.muted
@@ -99,6 +139,18 @@ export function GiftMeaningScene() {
             </p>
           )
         )}
+      </div>
+
+      {/* Right: baby solo — emotional bridge into the iPhone reveal */}
+      <div className="split-image" style={{ position: 'relative', zIndex: 1 }}>
+        <MemoryImage
+          ref={imageRef}
+          src="/images/baby.jpg"
+          alt="Newborn daughter resting peacefully"
+          aspectRatio="3/4"
+          objectPosition="center 55%"
+          glowStrength="strong"
+        />
       </div>
     </section>
   )

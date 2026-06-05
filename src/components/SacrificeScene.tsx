@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
+import { MemoryImage } from './MemoryImage'
 
 const LINES = [
   { text: 'For 9 months,',                   em: false },
@@ -13,6 +14,7 @@ const LINES = [
 
 export function SacrificeScene() {
   const sectionRef = useRef<HTMLElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -23,6 +25,7 @@ export function SacrificeScene() {
     const scrollEnd = isMobile ? '+=1400' : '+=2200'
 
     const ctx = gsap.context(() => {
+      // Scrubbed text reveal
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -42,6 +45,28 @@ export function SacrificeScene() {
           (i / lines.length) * 0.82
         )
       })
+
+      // Image entrance — separate, fires as section enters viewport
+      if (imageRef.current) {
+        gsap.fromTo(
+          imageRef.current,
+          { opacity: 0, x: 48, scale: 0.93, filter: 'blur(12px)' },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1.8,
+            ease: 'power3.out',
+            delay: 0.2,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          }
+        )
+      }
     }, section)
 
     return () => ctx.revert()
@@ -50,22 +75,23 @@ export function SacrificeScene() {
   return (
     <section
       ref={sectionRef}
-      className="scene min-h-screen flex-col justify-center"
+      className="scene min-h-screen scene-split"
       style={{ background: 'transparent', overflow: 'hidden' }}
     >
-      {/* Warm ambient behind text */}
+      {/* Warm ambient */}
       <div
         aria-hidden
         style={{
           position: 'absolute',
           inset: 0,
           background:
-            'radial-gradient(ellipse 65% 50% at 30% 55%, rgba(201,168,122,0.055) 0%, transparent 65%)',
+            'radial-gradient(ellipse 65% 50% at 28% 55%, rgba(201,168,122,0.055) 0%, transparent 65%)',
           pointerEvents: 'none',
         }}
       />
 
-      <div style={{ maxWidth: '640px', width: '100%', position: 'relative', zIndex: 1 }}>
+      {/* Left: text */}
+      <div className="split-text" style={{ position: 'relative', zIndex: 1, maxWidth: '480px' }}>
         {LINES.map((line, i) =>
           (line as { spacer?: boolean }).spacer ? (
             <div key={i} style={{ height: '1.5em' }} />
@@ -74,7 +100,7 @@ export function SacrificeScene() {
               key={i}
               className="sacrifice-line text-display"
               style={{
-                fontSize: 'clamp(1.7rem, 3.6vw, 3.2rem)',
+                fontSize: 'clamp(1.7rem, 3.2vw, 3rem)',
                 fontWeight: line.em ? 400 : 300,
                 fontStyle: line.em ? 'italic' : 'normal',
                 color: line.em ? 'var(--champagne)' : 'var(--white)',
@@ -90,6 +116,18 @@ export function SacrificeScene() {
             </p>
           )
         )}
+      </div>
+
+      {/* Right: image */}
+      <div className="split-image" style={{ position: 'relative', zIndex: 1 }}>
+        <MemoryImage
+          ref={imageRef}
+          src="/images/bhy1.jpg"
+          alt="Wife resting in hospital bed"
+          aspectRatio="3/4"
+          objectPosition="center 25%"
+          glowStrength="medium"
+        />
       </div>
     </section>
   )

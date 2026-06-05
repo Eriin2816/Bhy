@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
+import { MemoryImage } from './MemoryImage'
 
 const SENTENCES = [
   'I saw your strength.',
@@ -15,6 +16,7 @@ const SCHEDULE = [
 
 export function AppreciationScene() {
   const sectionRef = useRef<HTMLElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -68,6 +70,28 @@ export function AppreciationScene() {
           )
         }
       })
+
+      // Image entrance — separate, not scrubbed
+      if (imageRef.current && !isMobile) {
+        gsap.fromTo(
+          imageRef.current,
+          { opacity: 0, x: 40, scale: 0.93, filter: 'blur(12px)' },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1.8,
+            ease: 'power3.out',
+            delay: 0.4,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          }
+        )
+      }
     }, section)
 
     return () => ctx.revert()
@@ -76,8 +100,8 @@ export function AppreciationScene() {
   return (
     <section
       ref={sectionRef}
-      className="scene min-h-screen"
-      style={{ background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      className="scene min-h-screen scene-split"
+      style={{ background: 'transparent' }}
     >
       {/* Centered warm glow */}
       <div
@@ -91,12 +115,13 @@ export function AppreciationScene() {
         }}
       />
 
+      {/* Left: text sentences — one at a time via scrub */}
       <div
+        className="split-text"
         style={{
           position: 'relative',
-          width: '100%',
-          maxWidth: '780px',
           height: 'clamp(200px, 38vh, 360px)',
+          maxWidth: '480px',
         }}
       >
         {SENTENCES.map((sentence, i) => (
@@ -112,8 +137,8 @@ export function AppreciationScene() {
               textAlign: 'center',
               fontSize:
                 i === 2
-                  ? 'clamp(1.9rem, 4.2vw, 4rem)'
-                  : 'clamp(2.2rem, 5vw, 4.6rem)',
+                  ? 'clamp(1.7rem, 3.6vw, 3.4rem)'
+                  : 'clamp(2rem, 4.2vw, 4rem)',
               fontWeight: i === 2 ? 400 : 300,
               fontStyle: i === 2 ? 'italic' : 'normal',
               color: i === 1 ? 'var(--champagne)' : 'var(--white)',
@@ -127,6 +152,18 @@ export function AppreciationScene() {
             {sentence}
           </p>
         ))}
+      </div>
+
+      {/* Right: image — desktop only */}
+      <div className="split-image" style={{ position: 'relative', zIndex: 1 }}>
+        <MemoryImage
+          ref={imageRef}
+          src="/images/bhy2.jpg"
+          alt="Wife in wheelchair before delivery"
+          aspectRatio="3/4"
+          objectPosition="center 20%"
+          glowStrength="soft"
+        />
       </div>
     </section>
   )

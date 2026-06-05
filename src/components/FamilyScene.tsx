@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
+import { MemoryImage } from './MemoryImage'
 
 const LINES = [
   { text: 'Our family is growing again.',      size: 'large'     },
@@ -14,6 +15,7 @@ const LINES = [
 
 export function FamilyScene() {
   const sectionRef = useRef<HTMLElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -38,6 +40,39 @@ export function FamilyScene() {
           },
         }
       )
+
+      // Image entrance — slides in from left
+      if (imageRef.current) {
+        gsap.fromTo(
+          imageRef.current,
+          { opacity: 0, x: -48, scale: 0.93, filter: 'blur(12px)' },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+
+        // Slow parallax while scrolling through the section
+        gsap.to(imageRef.current, {
+          yPercent: -10,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      }
     }, section)
 
     return () => ctx.revert()
@@ -46,7 +81,7 @@ export function FamilyScene() {
   return (
     <section
       ref={sectionRef}
-      className="scene min-h-screen flex-col"
+      className="scene min-h-screen scene-split"
       style={{ background: 'transparent', overflow: 'hidden' }}
     >
       {/* Right-side ambient */}
@@ -56,12 +91,25 @@ export function FamilyScene() {
           position: 'absolute',
           inset: 0,
           background:
-            'radial-gradient(ellipse 55% 65% at 72% 42%, rgba(201,168,122,0.05) 0%, transparent 68%)',
+            'radial-gradient(ellipse 55% 65% at 72% 42%, rgba(201,168,122,0.06) 0%, transparent 68%)',
           pointerEvents: 'none',
         }}
       />
 
-      <div style={{ maxWidth: '660px', width: '100%', position: 'relative', zIndex: 1 }}>
+      {/* Left: image (reversed on mobile — image goes below via CSS) */}
+      <div className="split-image split-image-reverse" style={{ position: 'relative', zIndex: 1 }}>
+        <MemoryImage
+          ref={imageRef}
+          src="/images/bhy3.jpg"
+          alt="Family together at the hospital"
+          aspectRatio="4/3"
+          objectPosition="center 55%"
+          glowStrength="strong"
+        />
+      </div>
+
+      {/* Right: text */}
+      <div className="split-text" style={{ position: 'relative', zIndex: 1, maxWidth: '480px' }}>
         {LINES.map((line, i) =>
           line.size === 'spacer' ? (
             <div key={i} style={{ height: '1.5em' }} />
@@ -72,8 +120,8 @@ export function FamilyScene() {
               style={{
                 fontSize:
                   line.size === 'large'
-                    ? 'clamp(2.1rem, 4.8vw, 4.2rem)'
-                    : 'clamp(1.5rem, 3.1vw, 2.7rem)',
+                    ? 'clamp(2rem, 4.2vw, 3.8rem)'
+                    : 'clamp(1.4rem, 2.8vw, 2.4rem)',
                 fontWeight: line.size === 'large' ? 500 : line.size === 'medium-em' ? 400 : 300,
                 fontStyle: line.size === 'medium-em' ? 'italic' : 'normal',
                 color:

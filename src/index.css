@@ -238,6 +238,60 @@ body::after {
   animation: heartbeat-glow 3s ease-in-out infinite;
 }
 
+/* ─── Memory image sweep animation ───────────────────────────────── */
+.memory-image-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.055) 50%,
+    transparent 75%
+  );
+  animation: memory-sweep 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+@keyframes memory-sweep {
+  0%   { transform: translateX(-140%); opacity: 0; }
+  10%  { opacity: 1; }
+  55%  { transform: translateX(200%); opacity: 0; }
+  100% { transform: translateX(200%); opacity: 0; }
+}
+
+/* ─── Scene split layout (text + image two-col) ───────────────────── */
+.scene-split {
+  flex-direction: row;
+  gap: clamp(2.5rem, 5vw, 5.5rem);
+  align-items: center;
+  justify-content: center;
+}
+.split-text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.split-image {
+  flex: 0 0 auto;
+  width: clamp(240px, 36vw, 460px);
+}
+
+@media (max-width: 767px) {
+  .scene-split {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  .split-text {
+    width: 100%;
+  }
+  .split-image {
+    width: 100%;
+    max-width: 340px;
+  }
+  .split-image-reverse {
+    order: -1;
+  }
+}
+
 /* ─── Video overlay text initial state ───────────────────────────── */
 .video-overlay-line {
   opacity: 0;

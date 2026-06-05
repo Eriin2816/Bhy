@@ -3,11 +3,21 @@ import gsap from 'gsap'
 
 export function IntroScene() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const ghostRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const lines = containerRef.current?.querySelectorAll('.intro-line')
       if (!lines) return
+
+      // Ghost image fades in very slowly and subtly
+      if (ghostRef.current) {
+        gsap.fromTo(
+          ghostRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 5, ease: 'power1.out', delay: 0.8 }
+        )
+      }
 
       gsap.fromTo(
         lines,
@@ -32,6 +42,30 @@ export function IntroScene() {
       className="scene min-h-screen flex-col text-center"
       style={{ background: 'transparent' }}
     >
+      {/* Ghost photo — barely visible, adds warmth and personal depth */}
+      <div
+        ref={ghostRef}
+        aria-hidden
+        style={{
+          position: 'absolute',
+          right: '-5%',
+          top: '5%',
+          width: '55%',
+          height: '92%',
+          backgroundImage: 'url(/images/bhy1.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 30%',
+          opacity: 0,
+          filter: 'blur(32px) saturate(0.4)',
+          maskImage:
+            'radial-gradient(ellipse 75% 80% at 75% 50%, rgba(0,0,0,0.18) 0%, transparent 70%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 75% 80% at 75% 50%, rgba(0,0,0,0.18) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+
       {/* Warm centered bloom */}
       <div
         aria-hidden
